@@ -289,8 +289,8 @@ export const postRouter = new Hono<Context>()
           isNull(commentsTable.parentCommentId),
         ),
         orderBy: sortOrder,
-        limit: limit,
-        offset: offset,
+        limit,
+        offset,
         with: {
           author: {
             columns: {
