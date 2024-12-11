@@ -5,6 +5,9 @@ import ReactDOM from "react-dom/client";
 
 import "./globals.css";
 
+import ErrorComponent from "./components/error";
+import Loader from "./components/loader";
+import NotFound from "./components/not-found";
 import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient();
@@ -14,6 +17,9 @@ const router = createRouter({
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
   context: { queryClient },
+  defaultPendingComponent: Loader,
+  defaultNotFoundComponent: NotFound,
+  defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
 });
 
 // Register things for typesafety
