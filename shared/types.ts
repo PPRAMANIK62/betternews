@@ -1,6 +1,10 @@
-import { insertCommentsSchema } from "@/db/schemas/comments";
-import { insertPostSchema } from "@/db/schemas/posts";
 import { z } from "zod";
+
+import { insertCommentsSchema } from "../server/db/schemas/comments";
+import { insertPostSchema } from "../server/db/schemas/posts";
+import { hcWithType } from "../server/index";
+
+export { hcWithType };
 
 export type SuccessResponse<T = void> = {
   success: true;

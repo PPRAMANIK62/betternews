@@ -1,12 +1,12 @@
 import { Hono } from "hono";
+import { serveStatic } from "hono/bun";
+import { hc } from "hono/client";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 
-import type { Context } from "@/context";
-import { lucia } from "@/lucia";
-
-import type { ErrorResponse } from "@/shared/types";
-
+import type { ErrorResponse } from "../shared/types";
+import type { Context } from "./context";
+import { lucia } from "./lucia";
 import { authRouter } from "./routes/auth";
 import { commentsRouter } from "./routes/comments";
 import { postRouter } from "./routes/posts";
@@ -66,13 +66,27 @@ app.onError((err, c) => {
     {
       success: false,
       error:
-        process.env["NODE_ENV"] === "production"
-          ? "Internal Server Error"
+        process.env.NODE_ENV === "production"
+          ? "Interal Server Error"
           : (err.stack ?? err.message),
     },
     500,
   );
 });
 
-export default app;
+app.get("*", serveStatic({ root: "./frontend/dist" }));
+app.get("*", serveStatic({ path: "./frontend/dist/index.html" }));
+
+export default {
+  port: process.env["PORT"] || 3000,
+  hostname: "0.0.0.0",
+  fetch: app.fetch,
+};
+
 export type ApiRoutes = typeof routes;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const client = hc<ApiRoutes>("/");
+
+export const hcWithType = (...args: Parameters<typeof hc>): typeof client =>
+  hc<ApiRoutes>(...args);
